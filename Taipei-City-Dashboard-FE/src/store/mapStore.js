@@ -196,17 +196,29 @@ export const useMapStore = defineStore("map", {
 		},
 
 		// 6. Get user location marker
-		getUserLocationMarker() {
-			navigator.geolocation.getCurrentPosition((position) => {
-				const { latitude, longitude } = position.coords;
-				// 在地圖上顯示用戶位置
-				this.userMarker = new mapboxGl.Marker()
-					.setLngLat([longitude, latitude])
-					.addTo(this.map);
 
-				// 將地圖中心移動到用戶位置
-				this.map.setCenter([longitude, latitude]);
-			});
+		getUserLocationMarker(status) {
+			if (status) {
+				navigator.geolocation.getCurrentPosition((position) => {
+					const { latitude, longitude } = position.coords;
+					// 在地圖上顯示用戶位置
+					this.userMarker = new mapboxGl.Marker()
+						.setLngLat([longitude, latitude])
+						.addTo(this.map);
+
+					// 將地圖中心移動到用戶位置，並添加动画效果
+					this.map.flyTo({
+						center: [longitude, latitude],
+						essential: true, // 如果用户拒绝了浏览器请求动画帧的权限，这个参数将确保地图平滑过渡
+					});
+				});
+			} else {
+				// 如果 trackUserLocation 为 false，则清除之前可能存在的用户标记
+				if (this.userMarker) {
+					this.userMarker.remove();
+					this.userMarker = null;
+				}
+			}
 		},
 
 		/* Adding Map Layers */

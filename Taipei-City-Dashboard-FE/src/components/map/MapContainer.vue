@@ -1,7 +1,7 @@
 <!-- Developed by Taipei Urban Intelligence Center 2023-2024-->
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useMapStore } from "../../store/mapStore";
 import { useDialogStore } from "../../store/dialogStore";
 import { useContentStore } from "../../store/contentStore";
@@ -14,6 +14,7 @@ const contentStore = useContentStore();
 
 const districtLayer = ref(false);
 const villageLayer = ref(false);
+const trackUserLocation = ref(false);
 
 function toggleDistrictLayer() {
 	districtLayer.value = !districtLayer.value;
@@ -25,9 +26,16 @@ function toggleVillageLayer() {
 	mapStore.toggleVillageBoundaries(villageLayer.value);
 }
 
+function toggleTrackUserLocation() {
+	trackUserLocation.value = !trackUserLocation.value;
+}
+
+watch(trackUserLocation, () => {
+	mapStore.getUserLocationMarker(trackUserLocation.value);
+});
+
 onMounted(() => {
 	mapStore.initializeMapBox();
-	mapStore.getUserLocationMarker();
 });
 </script>
 
@@ -62,6 +70,16 @@ onMounted(() => {
 					@click="toggleVillageLayer"
 				>
 					里
+				</button>
+				<button
+					:style="{
+						color: villageLayer
+							? 'var(--color-highlight)'
+							: 'var(--color-component-background)',
+					}"
+					@click="toggleTrackUserLocation"
+				>
+					我
 				</button>
 				<button
 					class="show-if-mobile"
