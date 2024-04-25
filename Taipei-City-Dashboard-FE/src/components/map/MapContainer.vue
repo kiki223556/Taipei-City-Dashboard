@@ -15,13 +15,6 @@ const contentStore = useContentStore();
 const districtLayer = ref(false);
 const villageLayer = ref(false);
 
-// const newSavedLocation = ref("");
-
-// function handleSubmitNewLocation() {
-// 	mapStore.addNewSavedLocation(newSavedLocation.value);
-// 	newSavedLocation.value = "";
-// }
-
 function toggleDistrictLayer() {
 	districtLayer.value = !districtLayer.value;
 	mapStore.toggleDistrictBoundaries(districtLayer.value);
@@ -34,6 +27,7 @@ function toggleVillageLayer() {
 
 onMounted(() => {
 	mapStore.initializeMapBox();
+	mapStore.getUserLocationMarker();
 });
 </script>
 

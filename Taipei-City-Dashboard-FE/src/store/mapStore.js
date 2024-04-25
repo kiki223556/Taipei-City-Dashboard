@@ -55,6 +55,8 @@ export const useMapStore = defineStore("map", {
 		savedLocations: savedLocations,
 		// Store currently loading layers,
 		loadingLayers: [],
+		// Store user location
+		userMarker: null,
 	}),
 	getters: {},
 	actions: {
@@ -191,6 +193,20 @@ export const useMapStore = defineStore("map", {
 			} else {
 				this.map.setLayoutProperty("tp_village", "visibility", "none");
 			}
+		},
+
+		// 6. Get user location marker
+		getUserLocationMarker() {
+			navigator.geolocation.getCurrentPosition((position) => {
+				const { latitude, longitude } = position.coords;
+				// 在地圖上顯示用戶位置
+				this.userMarker = new mapboxGl.Marker()
+					.setLngLat([longitude, latitude])
+					.addTo(this.map);
+
+				// 將地圖中心移動到用戶位置
+				this.map.setCenter([longitude, latitude]);
+			});
 		},
 
 		/* Adding Map Layers */
