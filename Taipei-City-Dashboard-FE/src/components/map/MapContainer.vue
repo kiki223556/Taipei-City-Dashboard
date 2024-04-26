@@ -28,11 +28,8 @@ function toggleVillageLayer() {
 
 function toggleTrackUserLocation() {
 	trackUserLocation.value = !trackUserLocation.value;
+	mapStore.toggleTrackUserLocationMarker(trackUserLocation.value);
 }
-
-watch(trackUserLocation, () => {
-	mapStore.getUserLocationMarker(trackUserLocation.value);
-});
 
 onMounted(() => {
 	mapStore.initializeMapBox();
